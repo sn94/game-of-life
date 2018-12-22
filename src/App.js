@@ -138,7 +138,7 @@ class App extends Component {
           {this.state.collapseID && overlay}
           <main style={{ marginTop: "4rem" }}>
 
-            <Mundo  rows="16" cols="16" patron="4/2" />
+            <Mundo  rows="32" cols="32" patron="23/3" />
           </main>
 
           <Footer color="indigo">

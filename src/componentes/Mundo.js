@@ -9,14 +9,14 @@ export default class Mundo extends Component{
 
 /*
  Pentadecatlon
-  x   x
-xx xxx xx
-  x   x
+  x    x
+xx xxxx xx
+  x    x
 */
     constructor(props){
         super(props);
         //primeras celulas
-        let celus=  this.generar_celulas();
+        let celus=  this.estado_inicial(4,4); 
         //Setear otros datos: generacion y numero de celulas vivas (poblacion)
         this.state= { celulas: celus, generacion: 1, poblacion:  this.contar_poblacion( celus)}; 
         //binding de metodos
@@ -27,7 +27,35 @@ xx xxx xx
         
     }
 
-  
+    crear_celdas(){
+         // Generar aleatoriamente celulas vivas
+         let celus= [];
+         for(let i=0; i< this.props.rows * this.props.cols; i++){
+           celus.push( false ); 
+         }
+         return celus;
+    }
+
+    estado_inicial(  posX, posY){
+        let celus= this.crear_celdas();
+        let state_i= [[false,false,true, false, false,false,false,true,false, false],
+        [true,true,false,true, true,true,true,false,true,true],
+        [false,false,true, false, false,false,false,true,false, false] ];
+           
+        let get= (i,j)=>{
+            if( i>=0 && i< state_i.length  &&  j>=0 && j< state_i[0].length )
+            return state_i[i][j];
+            else return false;
+        };
+       
+        for(let i=posX; i< this.props.rows; i++){
+            for(let j=posY; j< this.props.cols; j++){
+                celus[ this.indice_secuencial(i ,j)]= get( i-posX, j-posY); 
+            }
+          }
+           return celus;
+    }
+
 
 
     generar_celulas= ()=>{
@@ -37,6 +65,9 @@ xx xxx xx
        return celus;
     };
 
+
+
+
     //generar otra familia de celulas
    new_cells_family= ()=>{
     let new_cells=  this.generar_celulas();
@@ -44,6 +75,8 @@ xx xxx xx
         celulas:  new_cells, generacion:  1 , poblacion: this.contar_poblacion( new_cells)
     })      );
    };
+
+
 
 
     determinar_patron= (  arg)=>{
