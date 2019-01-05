@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import CellsGroup from './Cellsgroup';
 import Control from './Control';
-
+import patrones from '../data/patrones';
 
 export default class Mundo extends Component{
 
@@ -14,9 +14,10 @@ xx xxxx xx
   x    x
 */
     constructor(props){
-        super(props);
+        super(props); 
         //primeras celulas
-        let celus=  this.estado_inicial(4,4); 
+                                        //x y  tipo_patron
+        let celus=  this.asentar_patron(3,3, patrones.pentadecathlon); 
         //Setear otros datos: generacion y numero de celulas vivas (poblacion)
         this.state= { celulas: celus, generacion: 1, poblacion:  this.contar_poblacion( celus)}; 
         //binding de metodos
@@ -36,11 +37,9 @@ xx xxxx xx
          return celus;
     }
 
-    estado_inicial(  posX, posY){
+    asentar_patron(  posX, posY, patron){
         let celus= this.crear_celdas();
-        let state_i= [[false,false,true, false, false,false,false,true,false, false],
-        [true,true,false,true, true,true,true,false,true,true],
-        [false,false,true, false, false,false,false,true,false, false] ];
+        let state_i=  patron;
            
         let get= (i,j)=>{
             if( i>=0 && i< state_i.length  &&  j>=0 && j< state_i[0].length )
@@ -70,7 +69,7 @@ xx xxxx xx
 
     //generar otra familia de celulas
    new_cells_family= ()=>{
-    let new_cells=  this.generar_celulas();
+    let new_cells=     this.asentar_patron(3,3, patrones.pentadecathlon); 
     this.setState( (stateprev, props)=>({
         celulas:  new_cells, generacion:  1 , poblacion: this.contar_poblacion( new_cells)
     })      );
@@ -82,9 +81,7 @@ xx xxxx xx
     determinar_patron= (  arg)=>{
     let dts=    arg.split("/");
     this.units_to_survive= dts[0].split("");
-    this.units_to_born= dts[1].split("");
-    console.log( "Para vivir ",   this.units_to_survive);
-    console.log( "Para nacer ", this.units_to_born );
+    this.units_to_born= dts[1].split(""); 
     }
     
     contar_poblacion= ( arg)=>{
@@ -178,7 +175,7 @@ xx xxxx xx
     existsLiveCellAt= ( i, j)=>{
 
         //verificar si las coordenadas estan en el rango permitido
-        if ( !( i < 0  ||  j< 0 || i=== this.props.rows ||   j === this.props.cols)) { 
+        if ( !( i < 0  ||  j< 0 || i> (this.props.rows-1) ||   j > (this.props.cols-1) )) { 
             return this.state.celulas[this.indice_secuencial(i,j) ] ;
         } return false;
         
@@ -207,8 +204,9 @@ xx xxxx xx
 
     survive= ( i , j)=>{
            
+       
             //    fila * columnas  +  col 
-            let sum= this.neighbours( i, j);
+            let sum= this.neighbours( i, j);  if( i===3 && j===15)  console.log( sum, i, j );
            //console.log( "numero de vecinos de ",i,j,"=", sum);
             let temp_index=  this.indice_secuencial( i, j); 
             if( this.state.celulas[   temp_index] &&  this.units_to_survive.includes( sum.toString()) ){
@@ -239,8 +237,7 @@ xx xxxx xx
 
 
 
-    start_Evolucion= ()=> { 
-        console.log("nuevo comienzo"); 
+    start_Evolucion= ()=> {  
         this.timerChange= setInterval( this.evolucionar_estado_mundo , 2000) ;
     };
 

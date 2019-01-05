@@ -17,13 +17,11 @@ export default class  Control extends Component{
         
         let label= this.state_alt!=="" ? this.state_alt.label :  this.state.label;
         this.state_alt= ""; 
-            if(  label ==="Iniciar"){ 
-                console.log("Asignar a ''iniciar''");
+            if(  label ==="Iniciar"){  
                 this.props.onStarting();
                 this.setState( this.state_pausa);
             }else{
-                if(  label ==="Pausar"){
-                    console.log("Asignar a ''continue''", this.state);
+                if(  label ==="Pausar"){ 
                     this.props.onPausing();
                     this.setState(  this.state_continuar );
                 }else{
@@ -38,13 +36,11 @@ export default class  Control extends Component{
     render(){
         let {label, color} = this.state_alt !== "" ? this.state_alt : this.state;
         if( ! this.props.poblacion ){//cuando la poblacion sea reducida a cero
-
-            console.log(  "cero poblacion");
+ 
             this.props.onPausing();//se pausa la tarea de evolucion
             label= this.state_inicial.label;
             color= this.state_inicial.color;
-            this.state_alt= this.state_inicial;
-            console.log( label, color );
+            this.state_alt= this.state_inicial; 
         } 
 
 
