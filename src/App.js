@@ -12,7 +12,7 @@ import {
 import { BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
 
-import Mundo from "./componentes/Mundo";
+import Universo from "./componentes/Universo";
 
 class App extends Component {
   constructor(props) {
@@ -138,7 +138,7 @@ class App extends Component {
           {this.state.collapseID && overlay}
           <main style={{ marginTop: "4rem" }}>
 
-            <Mundo  rows="9" cols="16" patron="23/3" />
+            <Universo  />
           </main>
 
           <Footer color="indigo">

@@ -17,12 +17,13 @@ xx xxxx xx
         super(props); 
         //primeras celulas
                                         //x y  tipo_patron
-        let celus=  this.asentar_patron(3,3, patrones.pentadecathlon); 
+        let celus=  this.asentar_patron(3,3, patrones[ props.tipo]); 
         //Setear otros datos: generacion y numero de celulas vivas (poblacion)
         this.state= { celulas: celus, generacion: 1, poblacion:  this.contar_poblacion( celus)}; 
         //binding de metodos
         this.indice_secuencial= this.indice_secuencial.bind( this);
         this.evolucionar_estado_mundo= this.evolucionar_estado_mundo.bind( this);
+        this.sig_estado_de_celulas= this.sig_estado_de_celulas.bind( this );
 
         this.determinar_patron( props.patron);
         
@@ -90,28 +91,28 @@ xx xxxx xx
     };
 
 
+    sig_estado_de_celulas(  ar){
+//verificar el estado de las celulas
+let nuevo=  ar.map( (item, indice)=> {  
+    let {x,y }= this.indice_x_y( indice );
+    return this.survive( x, y);
+});  return nuevo;
+    }
+
+
     evolucionar_estado_mundo(){
 
         if( this.contar_poblacion( this.state.celulas)  ){
             //verificar el estado de las celulas
-            let nuevo=  this.state.celulas.map( (item, indice)=> {  
-                let {x,y }= this.indice_x_y( indice );
-                return this.survive( x, y);
-            }); 
-
-        
-        let poblacioN=  this.contar_poblacion( nuevo) ;
-        this.setState( (stateprev, props)=>({
+            let nuevo=  this.sig_estado_de_celulas( this.state.celulas); 
+            let poblacioN=  this.contar_poblacion( nuevo) ;
+            this.setState( (stateprev, props)=>({
             celulas: nuevo, generacion: stateprev.generacion + 1 , poblacion: poblacioN
         })      );
         }else{ 
             this.setState({ poblacion: 0} );
             this.pausarEvolucion();
-            
-            
         }
-
-       
     }
 
     /**
@@ -178,9 +179,7 @@ xx xxxx xx
         if ( !( i < 0  ||  j< 0 || i> (this.props.rows-1) ||   j > (this.props.cols-1) )) { 
             return this.state.celulas[this.indice_secuencial(i,j) ] ;
         } return false;
-        
-       // console.log( i,j, this.props.rows, this.props.cols, coord_Valida ? "coord valida": "coord no valid", estado_Cell);
-    };
+         };
 
     neighbours= ( ci, cj )=>{
     
@@ -195,9 +194,7 @@ xx xxxx xx
         let v6=  this.existsLiveCellAt( ci+1 ,  cj-1)   ? 1 : 0; 
         let v7=  this.existsLiveCellAt( ci+1 ,  cj)     ? 1 : 0;
         let v8=  this.existsLiveCellAt( ci+1 ,  cj+1)   ? 1 : 0;
-        let finalsuma= v1+v2+v3+v4+v5+v6+v7+v8; 
-       // console.log( "top left", v1  ,"top",  v2 ,  "top righ", v3,"left",  v4 );
-        //console.log(  "right", v5, "bottom left", v6, "bottom", v7, "bottom right", v8);
+        let finalsuma= v1+v2+v3+v4+v5+v6+v7+v8;  
        return  finalsuma; 
       };
 
@@ -206,7 +203,7 @@ xx xxxx xx
            
        
             //    fila * columnas  +  col 
-            let sum= this.neighbours( i, j);  if( i===3 && j===15)  console.log( sum, i, j );
+            let sum= this.neighbours( i, j);   
            //console.log( "numero de vecinos de ",i,j,"=", sum);
             let temp_index=  this.indice_secuencial( i, j); 
             if( this.state.celulas[   temp_index] &&  this.units_to_survive.includes( sum.toString()) ){
